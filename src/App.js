@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import Tutorial from "./components/Tutorial";
+import { useFrontContext } from "./providers/frontContext";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  const context = useFrontContext();
+
+  if (!context)
+    return (
+      <div className="App">
+        <p>Waiting to connect to the Front context.</p>
+      </div>
+    );
+
+  switch (context.type) {
+    case "noConversation":
+      return (
+        <div className="App">
+          <p>
+            No conversation selected. Select a conversation to use this plugin.
+          </p>
+        </div>
+      );
+    case "singleConversation":
+      return <Tutorial />;
+    case "multiConversations":
+      return (
+        <div className="App">
+          <p>
+            Multiple conversations selected. Select only one conversation to use
+            this plugin.
+          </p>
+        </div>
+      );
+    default:
+      console.error(`Unsupported context type: ${context.type}`);
+      break;
+  }
 }
 
 export default App;
